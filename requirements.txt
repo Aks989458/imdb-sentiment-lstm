@@ -1,0 +1,5 @@
+torch
+lightning
+torchmetrics
+streamlit
+scikit-learn
