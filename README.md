@@ -44,7 +44,7 @@ These metrics ensure robust and unbiased performance evaluation.
 The application is deployed permanently using **Streamlit Community Cloud**.
 
 🔗 **Live App URL:**  
-*(Add your Streamlit Cloud URL here)*
+*(https://imdb-sentiment-lstm-fzyy5sqvdupmtehq85xict.streamlit.app/)*
 
 Users can enter a movie review and instantly receive:
 - Sentiment prediction (Positive / Negative)
