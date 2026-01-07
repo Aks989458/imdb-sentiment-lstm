@@ -51,5 +51,71 @@ Users can enter a movie review and instantly receive:
 - Confidence score
 
 ---
+## 📁 Repository Structure
 
+imdb-sentiment-lstm/
+│
+├── app.py # Streamlit dashboard
+├── model.py # LSTM model definition
+├── vocab.pkl # Saved vocabulary
+├── model_weights.pth # Trained model weights (state_dict)
+├── requirements.txt # Dependencies
+└── README.md
 
+---
+
+## 🛠️ Tech Stack
+
+- Python  
+- PyTorch  
+- Lightning (for training)  
+- Streamlit (for deployment)  
+- Scikit-learn  
+- Git & GitHub  
+
+---
+
+## ⚙️ How to Run Locally
+
+### 1️⃣ Clone the repository
+```bash
+git clone https://github.com/Aks989458/imdb-sentiment-lstm.git
+cd imdb-sentiment-lstm
+```
+### 2️⃣ Install dependencies
+```bash
+pip install -r requirements.txt
+```
+### 3️⃣ Run the Streamlit app
+```bash
+streamlit run app.py
+```
+
+---
+### 📌 Deployment Notes
+
+The deployed version uses model_weights.pth instead of Lightning .ckpt files
+
+This avoids Python and pickle compatibility issues in production
+
+CPU-only inference is used for Streamlit Cloud compatibility
+
+---
+
+### 🎓 Key Learning Outcomes
+
+Building NLP pipelines using deep learning
+
+Handling real-world model serialization and deployment issues
+
+Deploying ML models as public web applications
+
+Managing large model files and production constraints
+
+---
+
+### 🧾 License
+
+This project is intended for educational and academic use.
+
+---
