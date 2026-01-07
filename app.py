@@ -13,42 +13,39 @@ st.set_page_config(
 )
 
 st.title("🎬 IMDB Sentiment Analysis Dashboard")
-st.write("LSTM model trained using Lightning")
+st.write("LSTM-based sentiment analysis model")
 
 # -----------------------------
-# Load Model + Vocab (Cached)
+# Load Model + Vocab (SAFE)
 # -----------------------------
 @st.cache_resource
 def load_model_and_vocab():
+    # Load vocabulary
+    if not os.path.exists("vocab.pkl"):
+        st.error("❌ vocab.pkl not found")
+        st.stop()
+
     with open("vocab.pkl", "rb") as f:
         vocab = pickle.load(f)
 
-    ckpt_dir = "Old-checkpoints"
-
-    if not os.path.exists(ckpt_dir):
-        st.error(f"❌ Checkpoint directory '{ckpt_dir}' not found.")
+    # Load model weights
+    if not os.path.exists("model_weights.pth"):
+        st.error("❌ model_weights.pth not found")
         st.stop()
 
-    ckpt_files = [f for f in os.listdir(ckpt_dir) if f.endswith(".ckpt")]
+    model = SentimentLSTM(vocab_size=len(vocab))
 
-    if not ckpt_files:
-        st.error("❌ No checkpoint file found.")
-        st.stop()
-
-    ckpt_path = os.path.join(ckpt_dir, ckpt_files[0])
-
-    model = SentimentLSTM.load_from_checkpoint(
-        ckpt_path,
-        vocab_size=len(vocab),
-        weights_only=False  # 🔥 CRITICAL FIX
+    state_dict = torch.load(
+        "model_weights.pth",
+        map_location="cpu"
     )
+    model.load_state_dict(state_dict)
 
+    model.eval()
     device = torch.device("cpu")  # Streamlit Cloud = CPU only
     model.to(device)
-    model.eval()
 
     return model, vocab, device
-
 
 model, vocab, device = load_model_and_vocab()
 
@@ -62,11 +59,13 @@ def predict_sentiment(text):
     tokens = text.lower().split()
     encoded = [vocab.get(w, vocab["<unk>"]) for w in tokens]
 
-    x = torch.tensor(encoded, dtype=torch.long).unsqueeze(0).to(device)
+    x = torch.tensor(
+        encoded,
+        dtype=torch.long
+    ).unsqueeze(0).to(device)
 
     with torch.no_grad():
-        logits = model(x)
-        prob = torch.sigmoid(logits).item()
+        prob = torch.sigmoid(model(x)).item()
 
     label = "Positive 😀" if prob > 0.5 else "Negative 😞"
     return prob, label
@@ -87,7 +86,7 @@ if st.button("Predict Sentiment"):
         st.warning("Please enter some text.")
     else:
         st.success(f"Prediction: **{label}**")
-        st.info(f"Confidence Score: **{prob:.2f}**")
+        st.info(f"Confidence Score: **{prob:.2f}")
 
 st.markdown("---")
-st.caption("Model: LSTM | Dataset: IMDB | Framework: Lightning")
+st.caption("Model: LSTM | Dataset: IMDB | Framework: PyTorch")
