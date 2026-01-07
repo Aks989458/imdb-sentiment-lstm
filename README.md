@@ -52,5 +52,4 @@ Users can enter a movie review and instantly receive:
 
 ---
 
-## 📁 Repository Structure
 
