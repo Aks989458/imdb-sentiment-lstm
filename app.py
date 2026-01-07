@@ -20,30 +20,35 @@ st.write("LSTM model trained using Lightning")
 # -----------------------------
 @st.cache_resource
 def load_model_and_vocab():
-    # Load vocab
     with open("vocab.pkl", "rb") as f:
         vocab = pickle.load(f)
 
-    # Auto-detect best checkpoint
     ckpt_dir = "Old-checkpoints"
+
+    if not os.path.exists(ckpt_dir):
+        st.error(f"❌ Checkpoint directory '{ckpt_dir}' not found.")
+        st.stop()
+
     ckpt_files = [f for f in os.listdir(ckpt_dir) if f.endswith(".ckpt")]
 
-    if len(ckpt_files) == 0:
-        st.error("❌ No checkpoint found in /checkpoints")
+    if not ckpt_files:
+        st.error("❌ No checkpoint file found.")
         st.stop()
 
     ckpt_path = os.path.join(ckpt_dir, ckpt_files[0])
 
     model = SentimentLSTM.load_from_checkpoint(
         ckpt_path,
-        vocab_size=len(vocab)
+        vocab_size=len(vocab),
+        weights_only=False  # 🔥 CRITICAL FIX
     )
 
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    device = torch.device("cpu")  # Streamlit Cloud = CPU only
     model.to(device)
     model.eval()
 
     return model, vocab, device
+
 
 model, vocab, device = load_model_and_vocab()
 
