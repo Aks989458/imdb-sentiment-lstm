@@ -25,7 +25,7 @@ def load_model_and_vocab():
         vocab = pickle.load(f)
 
     # Auto-detect best checkpoint
-    ckpt_dir = "checkpoints"
+    ckpt_dir = "Old-checkpoints"
     ckpt_files = [f for f in os.listdir(ckpt_dir) if f.endswith(".ckpt")]
 
     if len(ckpt_files) == 0:
